@@ -148,6 +148,35 @@ describe("OverlayToaster", () => {
             );
         });
 
+        it("dismiss() removes queued toast before it's shown", async () => {
+            toaster.show({ message: "one" });
+            const key = toaster.show({ message: "two" });
+            const key3 = toaster.show({ message: "three" });
+            
+            await waitFor(() => assert.lengthOf(toaster.getToasts(), 1, "expected 1 toast initially"));
+            
+            toaster.dismiss(key);
+            
+            await waitFor(
+                () => {
+                    const messages = toaster.getToasts().map(t => t.message);
+                    assert.deepEqual(messages, ["three", "one"], "expected 'two' to be dismissed from queue");
+                },
+                { timeout: 3 * OVERLAY_TOASTER_DELAY_MS },
+            );
+        });
+
+        it("dismiss() calls onDismiss for queued toast", async () => {
+            const onDismiss = spy();
+            toaster.show({ message: "one" });
+            const key = toaster.show({ message: "two", onDismiss });
+            
+            toaster.dismiss(key);
+            
+            assert.isTrue(onDismiss.calledOnce, "onDismiss should be called for queued toast");
+            assert.isTrue(onDismiss.calledWith(false), "onDismiss should be called with timeoutExpired=false");
+        });
+
         it("clear() removes all toasts", async () => {
             toaster.show({ message: "one" });
             toaster.show({ message: "two" });

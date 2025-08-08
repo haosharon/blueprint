@@ -232,11 +232,12 @@ export class OverlayToaster extends AbstractPureComponent<OverlayToasterProps, O
     }
 
     public dismiss(key: string, timeoutExpired = false) {
-        const queuedToast = this.queue.toasts.find(t => t.key === key);
-        if (queuedToast) {
-            this.queue.toasts = this.queue.toasts.filter(t => t.key !== key);
-            queuedToast.onDismiss?.(timeoutExpired);
-        }
+        this.queue.toasts.forEach(t => {
+            if (t.key === key) {
+                t.onDismiss?.(timeoutExpired);
+            }
+        });
+        this.queue.toasts = this.queue.toasts.filter(t => t.key !== key);
 
         this.setState(prevState => {
             const toasts = prevState.toasts.filter(t => {

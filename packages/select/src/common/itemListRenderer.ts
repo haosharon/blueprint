@@ -81,6 +81,41 @@ export type ItemListRenderer<T> = (itemListProps: ItemListRendererProps<T>) => R
  * `ItemListRenderer` helper method for rendering each item in `filteredItems`,
  * with optional support for `noResults` (when filtered items is empty)
  * and `initialContent` (when query is empty).
+ * 
+ * This utility function provides a standardized way to handle the three common
+ * rendering scenarios in item lists:
+ * 1. When the query is empty, show initial content (if provided)
+ * 2. When no items match the filter, show a "no results" message
+ * 3. When items are available, render them using the provided `renderItem` function
+ * 
+ * @param props - The item list renderer props containing filtered items, query, and render functions
+ * @param noResults - Optional content to display when `filteredItems` is empty (no items match the current filter)
+ * @param initialContent - Optional content to display when `query` is empty (before user starts typing)
+ * @returns The rendered content: `initialContent`, `noResults`, or an array of rendered items
+ * 
+ * @example
+ * ```tsx
+ * // Basic usage in an itemListRenderer
+ * const itemListRenderer = (listProps: ItemListRendererProps<string>) => {
+ *   const noResults = <div>No items found</div>;
+ *   const initialContent = <div>Start typing to search...</div>;
+ *   
+ *   return (
+ *     <Menu>
+ *       {renderFilteredItems(listProps, noResults, initialContent)}
+ *     </Menu>
+ *   );
+ * };
+ * ```
+ * 
+ * @example
+ * ```tsx
+ * // Usage with only noResults (no initial content)
+ * const menuContent = renderFilteredItems(
+ *   listProps,
+ *   <MenuItem disabled text="No results found" />
+ * );
+ * ```
  */
 export function renderFilteredItems(
     props: ItemListRendererProps<any>,

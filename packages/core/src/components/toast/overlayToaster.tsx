@@ -236,7 +236,6 @@ export class OverlayToaster extends AbstractPureComponent<OverlayToasterProps, O
         if (queuedToast) {
             this.queue.toasts = this.queue.toasts.filter(t => t.key !== key);
             queuedToast.onDismiss?.(timeoutExpired);
-            return;
         }
 
         this.setState(prevState => {

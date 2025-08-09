@@ -205,6 +205,8 @@ export const ContextMenu: React.FC<ContextMenuProps> = React.forwardRef<any, Con
                 !disabled && (Utils.isFunction(children) || Utils.isFunction(content) || content !== undefined);
 
             if (shouldHandleEvent) {
+                e.preventDefault();
+                
                 setIsOpen(true);
                 e.persist();
                 setMouseEvent(e);
@@ -218,8 +220,6 @@ export const ContextMenu: React.FC<ContextMenuProps> = React.forwardRef<any, Con
                     // If there is no menu content, we shouldn't automatically swallow the contextmenu event, since the
                     // user probably wants to fall back to default browser behavior. If they still want to disable the
                     // native context menu in that case, they can do so with their own `onContextMenu` handler.
-                } else {
-                    e.preventDefault();
                 }
             }
 

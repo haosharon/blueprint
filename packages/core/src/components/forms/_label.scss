@@ -40,6 +40,10 @@ label.#{$ns}-label {
     > .#{$ns}-popover-wrapper {
       margin-top: 0;
     }
+
+    .#{$ns}-input {
+      margin-top: 0;
+    }
   }
 
   &.#{$ns}-disabled {

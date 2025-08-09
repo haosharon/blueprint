@@ -114,6 +114,10 @@ export class InputGroup extends AbstractPureComponent<InputGroupProps, InputGrou
 
     private rightElement: HTMLElement | null = null;
 
+    private resizeObserver: ResizeObserver | undefined;
+
+    private containerRef = React.createRef<HTMLElement>();
+
     private refHandlers = {
         leftElement: (ref: HTMLSpanElement | null) => (this.leftElement = ref),
         rightElement: (ref: HTMLSpanElement | null) => (this.rightElement = ref),
@@ -172,7 +176,7 @@ export class InputGroup extends AbstractPureComponent<InputGroupProps, InputGrou
 
         return React.createElement(
             tagName,
-            { className: inputGroupClasses },
+            { className: inputGroupClasses, ref: this.containerRef },
             this.maybeRenderLeftElement(),
             inputElement,
             this.maybeRenderRightElement(),
@@ -180,6 +184,11 @@ export class InputGroup extends AbstractPureComponent<InputGroupProps, InputGrou
     }
 
     public componentDidMount() {
+        this.resizeObserver =
+            globalThis.ResizeObserver != null
+                ? new ResizeObserver(() => this.updateInputWidth())
+                : undefined;
+        this.observeElement();
         this.updateInputWidth();
     }
 
@@ -188,6 +197,11 @@ export class InputGroup extends AbstractPureComponent<InputGroupProps, InputGrou
         if (prevProps.leftElement !== leftElement || prevProps.rightElement !== rightElement) {
             this.updateInputWidth();
         }
+        this.observeElement();
+    }
+
+    public componentWillUnmount() {
+        this.resizeObserver?.disconnect();
     }
 
     protected validateProps(props: InputGroupProps) {
@@ -228,6 +242,15 @@ export class InputGroup extends AbstractPureComponent<InputGroupProps, InputGrou
                 {rightElement}
             </span>
         );
+    }
+
+    private observeElement() {
+        if (this.resizeObserver === undefined || this.containerRef.current === null) {
+            return;
+        }
+
+        this.resizeObserver.disconnect();
+        this.resizeObserver.observe(this.containerRef.current);
     }
 
     private updateInputWidth() {

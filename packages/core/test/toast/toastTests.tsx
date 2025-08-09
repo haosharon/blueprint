@@ -95,5 +95,21 @@ describe("<Toast>", () => {
             assert.isTrue(handleDismiss.calledOnce, "onDismiss not called once");
             assert.isTrue(handleDismiss.firstCall.args[0], "onDismiss not called with `true`");
         });
+
+        it("timeout={Infinity} disables timeout", async () => {
+            mount(<Toast message="Hello" onDismiss={handleDismiss} timeout={Infinity} />);
+            await sleep(50);
+            assert.isTrue(handleDismiss.notCalled, "onDismiss was called when it should not have been");
+        });
+
+        it("updating timeout={Infinity} with timeout={X} starts timeout", async () => {
+            mount(<Toast message="Hello" onDismiss={handleDismiss} timeout={Infinity} />).setProps({
+                timeout: 20,
+            });
+            await sleep(20);
+
+            assert.isTrue(handleDismiss.calledOnce, "onDismiss not called once");
+            assert.isTrue(handleDismiss.firstCall.args[0], "onDismiss not called with `true`");
+        });
     });
 });

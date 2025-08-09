@@ -41,7 +41,7 @@ export const Toast = React.forwardRef<HTMLDivElement, ToastProps>((props, ref) =
     const clearTimeout = React.useCallback(() => setIsTimeoutStarted(false), []);
 
     // Per docs: "Providing a value less than or equal to 0 will disable the timeout (this is discouraged)."
-    const isTimeoutEnabled = timeout != null && timeout > 0;
+    const isTimeoutEnabled = timeout != null && timeout > 0 && isFinite(timeout);
 
     // timeout is triggered & cancelled by updating `isTimeoutStarted` state
     useTimeout(
